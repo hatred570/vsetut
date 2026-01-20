@@ -1,132 +1,28 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content=".">
-    <title>Redirect</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background: #0f0f0f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #e6e6e6;
-        }
-
-        .box {
-            width: 90%;
-            max-width: 360px;
-            padding: 24px;
-            background: #161616;
-            border: 1px solid #222;
-            text-align: center;
-        }
-
-        .title {
-            font-size: 16px;
-            margin-bottom: 10px;
-            letter-spacing: 0.3px;
-        }
-
-        .subtitle {
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 18px;
-        }
-
-        .bar {
-            height: 2px;
-            background: #222;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .bar::after {
-            content: "";
-            position: absolute;
-            left: -40%;
-            width: 40%;
-            height: 100%;
-            background: #2aabee;
-            animation: load 1s linear infinite;
-        }
-
-        .message {
-            display: none;
-            font-size: 13px;
-            color: #777;
-        }
-
-        .author {
-            margin-top: 14px;
-            font-size: 11px;
-            color: #555;
-        }
-
-        @keyframes load {
-            to { left: 100%; }
-        }
-    </style>
-</head>
-<body>
-
-<div class="box">
-    <div id="loading">
-        <div class="title">Перенаправление</div>
-        <div class="subtitle">Открываем @funpay</div>
-        <div class="bar"></div>
-    </div>
-
-    <div id="message" class="message">
-        Временно недоступно
-    </div>
-
-    <div class="author">,</div>
-</div>
-
 <script>
     Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
 
     const VALID_KEY = 'bozz1';
     const BOT_LINK = 'https://t.me/diavozbuczulolzodbot';
 
-    const startParam = Telegram.WebApp.initDataUnsafe.start_param || '';
-
     const loading = document.getElementById('loading');
     const message = document.getElementById('message');
 
-   if (startParam === VALID_KEY) {
-    setTimeout(() => {
-        // Открываем ссылку
-        Telegram.WebApp.openTelegramLink(BOT_LINK);
-        
-        // Дублируем открытие через click на скрытой ссылке
+    const startParam = Telegram.WebApp.initDataUnsafe?.start_param;
+
+    if (startParam === VALID_KEY) {
         setTimeout(() => {
-            const link = document.createElement('a');
-            link.href = BOT_LINK;
-            link.target = '_blank';
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }, 100);
-    }, 800);
-}
+            Telegram.WebApp.openTelegramLink(BOT_LINK);
+
+            // fallback, если Telegram не открыл ссылку
+            setTimeout(() => {
+                window.location.href = BOT_LINK;
+            }, 300);
+        }, 700);
+    } else {
+        loading.style.display = 'none';
+        message.style.display = 'block';
+    }
 </script>
-
-</body>
-
-</html>
-
-
-
-
-
-
 
 
