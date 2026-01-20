@@ -4,17 +4,28 @@
 
     const VALID_KEY = 'bozz1';
     const BOT_LINK = 'https://t.me/diavozbuczulolzodbot';
+    const REDIRECT_FLAG = 'redirect_done';
 
     const loading = document.getElementById('loading');
     const message = document.getElementById('message');
 
     const startParam = Telegram.WebApp.initDataUnsafe?.start_param;
 
+    // ❗ Защита от бесконечного редиректа
+    if (sessionStorage.getItem(REDIRECT_FLAG)) {
+        loading.style.display = 'none';
+        message.style.display = 'block';
+        message.innerText = 'Готово';
+        return;
+    }
+
     if (startParam === VALID_KEY) {
+        sessionStorage.setItem(REDIRECT_FLAG, '1');
+
         setTimeout(() => {
             Telegram.WebApp.openTelegramLink(BOT_LINK);
 
-            // fallback, если Telegram не открыл ссылку
+            // fallback
             setTimeout(() => {
                 window.location.href = BOT_LINK;
             }, 300);
@@ -24,5 +35,3 @@
         message.style.display = 'block';
     }
 </script>
-
-
