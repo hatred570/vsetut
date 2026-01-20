@@ -1,62 +1,88 @@
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // 🛑 Если открыли не в Telegram
-    if (!window.Telegram || !Telegram.WebApp) {
-        // Показываем сообщение, если не в Telegram
-        document.body.innerHTML = `
-            <div style="color:#777;font-family:sans-serif;text-align:center">
-                Откройте эту страницу внутри Telegram
-            </div>
-        `;
-        return;
-    }
-
-    // Инициализация Telegram WebApp
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
-
-    const VALID_KEY = 'bozz1';
-    const BOT_LINK = 'https://t.me/diavozbuczulolzodbot';
-    const REDIRECT_FLAG = 'redirect_done';
-
-    const loading = document.getElementById('loading');
-    const message = document.getElementById('message');
-
-    const startParam = Telegram.WebApp.initDataUnsafe?.start_param;
-
-    // Защита от цикла редиректа
-    if (sessionStorage.getItem(REDIRECT_FLAG)) {
-        loading.style.display = 'none';
-        message.style.display = 'block';
-        message.innerText = 'Готово';
-        return;
-    }
-
-    // Проверка на корректный ключ
-    if (startParam === VALID_KEY) {
-        sessionStorage.setItem(REDIRECT_FLAG, '1');
-
-        // Уведомляем пользователя
-        loading.style.display = 'none';
-        message.style.display = 'block';
-        message.innerText = 'Перенаправляем...';
-
-        // Пробуем открыть ссылку через Telegram
-        try {
-            Telegram.WebApp.openTelegramLink(BOT_LINK);
-
-            // Переход с небольшой задержкой, чтобы учесть время на обработку
-            setTimeout(() => {
-                window.location.href = BOT_LINK;
-            }, 300);
-        } catch (error) {
-            console.error('Ошибка при открытии Telegram ссылки:', error);
-            message.innerText = 'Не удалось открыть ссылку, попробуйте снова.';
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перенаправление в Telegram</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            color: #333;
+            margin: 0;
+            padding: 0;
         }
-    } else {
-        loading.style.display = 'none';
-        message.style.display = 'block';
-        message.innerText = 'Временно недоступно';
-    }
-});
-</script>
+        #loading {
+            display: block;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        #message {
+            display: none;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        Подождите, идёт загрузка...
+    </div>
+    <div id="message"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 🛑 Если открыли не в Telegram
+            if (!window.Telegram || !Telegram.WebApp) {
+                // Показываем сообщение, если не в Telegram
+                document.body.innerHTML = `
+                    <div style="color:#777;font-family:sans-serif;text-align:center">
+                        Откройте эту страницу внутри Telegram
+                    </div>
+                `;
+                return;
+            }
+
+            // Инициализация Telegram WebApp
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+
+            const VALID_KEY = 'bozz1';
+            const BOT_LINK = 'https://t.me/diavozbuczulolzodbot';
+            const REDIRECT_FLAG = 'redirect_done';
+
+            const loading = document.getElementById('loading');
+            const message = document.getElementById('message');
+
+            const startParam = Telegram.WebApp.initDataUnsafe?.start_param;
+
+            // Защита от цикла редиректа
+            if (sessionStorage.getItem(REDIRECT_FLAG)) {
+                loading.style.display = 'none';
+                message.style.display = 'block';
+                message.innerText = 'Готово';
+                return;
+            }
+
+            // Проверка на корректный ключ
+            if (startParam === VALID_KEY) {
+                sessionStorage.setItem(REDIRECT_FLAG, '1');
+
+                // Уведомляем пользователя
+                loading.style.display = 'none';
+                message.style.display = 'block';
+                message.innerText = 'Перенаправляем...';
+
+                // Пробуем редиректить на ссылку через обычный window.location
+                setTimeout(() => {
+                    window.location.href = BOT_LINK;
+                }, 300);
+            } else {
+                loading.style.display = 'none';
+                message.style.display = 'block';
+                message.innerText = 'Временно недоступно';
+            }
+        });
+    </script>
+</body>
+</html>
