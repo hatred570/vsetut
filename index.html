@@ -100,20 +100,29 @@
     const loading = document.getElementById('loading');
     const message = document.getElementById('message');
 
-    if (startParam === VALID_KEY) {
+   if (startParam === VALID_KEY) {
+    setTimeout(() => {
+        // Открываем ссылку
+        Telegram.WebApp.openTelegramLink(BOT_LINK);
+        
+        // Дублируем открытие через click на скрытой ссылке
         setTimeout(() => {
-            Telegram.WebApp.openTelegramLink(BOT_LINK);
-     }, 800);
-    } else {
-        loading.style.display = 'none';
-        message.style.display = 'block';
-        Telegram.WebApp.expand();
-    }
+            const link = document.createElement('a');
+            link.href = BOT_LINK;
+            link.target = '_blank';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }, 100);
+    }, 800);
+}
 </script>
 
 </body>
 
 </html>
+
 
 
 
